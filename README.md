@@ -15,6 +15,8 @@ docker-compose up -d --build
 1. Using Microsoft Azure Storage Explorer connect to Storage Accounts / Emulator.
 1. Create a container: sandbox 
 
+![alt text](azurite.png "azurite")
+
 ## Create a delta table
 
 ```bash
