@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  azurite:
+    container_name: delta_storage
+    image: mcr.microsoft.com/azure-storage/azurite
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    hostname: azurite
+    restart: always
+    command: 'azurite --loose --blobHost 0.0.0.0 --blobPort 10000 --location /workspace --debug /workspace/debug.log'
+    ports:
+      - 10000:10000
+    volumes:
+      - ./azurite:/workspace
+    networks:
+      - delta_network
+
+  api:
+    container_name: delta_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - azurite
+    environment:
+      - AZURITE_BLOB_STORAGE_URL=http://azurite:10000
+    networks:
+      - delta_network
+
+networks:
+  delta_network:
